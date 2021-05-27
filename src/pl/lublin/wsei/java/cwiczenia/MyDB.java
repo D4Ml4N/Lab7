@@ -1,8 +1,6 @@
 package pl.lublin.wsei.java.cwiczenia;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
 
 public class MyDB {
@@ -35,6 +33,7 @@ public class MyDB {
     }
 
     private Connection conn = null;
+    private Statement statement = null;
 
     private void connect() {
         Properties connectionProps = new Properties();
@@ -45,6 +44,7 @@ public class MyDB {
         String jdbcString = "jdbc:mysql://" + host + ":" + port + "/" + dbName;
         try {
             conn = DriverManager.getConnection(jdbcString, connectionProps);
+            statement = conn.createStatement();
         }
 
         catch (SQLException e) {
@@ -71,6 +71,17 @@ public class MyDB {
                 System.out.println("Błąd przy zamykaniu połączenia bazodanowego: " + e.getMessage());
 
         }
+    }
+    public ResultSet selectData(String selectStatement) {
+        if ((conn != null) && (statement != null))
+            try {
+                return statement.executeQuery(selectStatement);
+            }
+        catch (SQLException e) {
+                System.out.println("Błąd realizacji zapytania: " + selectStatement + ", " + e.getMessage());
+
+        }
+        return null;
     }
 }
 
